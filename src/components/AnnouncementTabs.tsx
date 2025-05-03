@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
 import {
   Box,
-  Tabs,
-  Tab,
   Card,
   CardContent,
   Typography,
@@ -10,7 +8,14 @@ import {
   List,
   ListItem,
   Divider,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  IconButton,
 } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import ReactMarkdown from 'react-markdown';
 
 interface Announcement {
@@ -57,76 +62,83 @@ export default function AnnouncementTabs() {
   }
 
   return (
-    <Box display="flex" gap={2}>
-      {/* 公告列表 */}
-      <Box flex={1}>
-        <List>
-          {announcements.map((announcement) => (
-            <Box key={announcement.filename}>
-              <ListItem 
-                button 
-                onClick={() => setSelectedAnnouncement(announcement.filename)}
-                selected={selectedAnnouncement === announcement.filename}
-              >
-                <Box>
-                  <Typography variant="h6">
-                    {announcement.title}
-                  </Typography>
-                  <Typography variant="caption" color="text.secondary">
-                    {new Date(announcement.date).toLocaleDateString('zh-CN')}
-                  </Typography>
-                  <Typography 
-                    variant="body2" 
-                    color="text.secondary"
-                    sx={{
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      display: '-webkit-box',
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: 'vertical',
-                    }}
-                  >
-                    {announcement.content}
-                  </Typography>
-                </Box>
-              </ListItem>
-              <Divider />
-            </Box>
-          ))}
-        </List>
-      </Box>
-
-      {/* 公告详情 */}
-      <Box flex={2}>
-        {selectedAnnouncement ? (
-          <Card>
-            <CardContent>
-              {announcements
-                .filter(a => a.filename === selectedAnnouncement)
-                .map(announcement => (
-                  <Box key={announcement.filename}>
-                    <Typography variant="h5" gutterBottom>
-                      {announcement.title}
-                    </Typography>
-                    <Typography color="text.secondary" gutterBottom>
-                      {new Date(announcement.date).toLocaleDateString('zh-CN')}
-                    </Typography>
-                    <Box sx={{ mt: 2 }}>
-                      <ReactMarkdown>{announcement.content}</ReactMarkdown>
-                    </Box>
-                  </Box>
-                ))
-              }
-            </CardContent>
-          </Card>
-        ) : (
-          <Box display="flex" justifyContent="center" alignItems="center" height="100%">
-            <Typography color="text.secondary">
-              请选择一个公告查看详情
-            </Typography>
+    <Box>
+      <List>
+        {announcements.map((announcement) => (
+          <Box key={announcement.filename}>
+            <ListItem 
+              button 
+              onClick={() => setSelectedAnnouncement(announcement.filename)}
+              selected={selectedAnnouncement === announcement.filename}
+            >
+              <Box>
+                <Typography variant="h6">
+                  {announcement.title}
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                  {new Date(announcement.date).toLocaleDateString('zh-CN')}
+                </Typography>
+                <Typography 
+                  variant="body2" 
+                  color="text.secondary"
+                  sx={{
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    display: '-webkit-box',
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: 'vertical',
+                  }}
+                >
+                  {announcement.content}
+                </Typography>
+              </Box>
+            </ListItem>
+            <Divider />
           </Box>
-        )}
-      </Box>
+        ))}
+      </List>
+
+      {/* 公告详情弹窗 */}
+      <Dialog
+        open={selectedAnnouncement !== null}
+        onClose={() => setSelectedAnnouncement(null)}
+        maxWidth="md"
+        fullWidth
+        scroll="paper"
+      >
+        {selectedAnnouncement && announcements
+          .filter(a => a.filename === selectedAnnouncement)
+          .map(announcement => (
+            <Box key={announcement.filename}>
+              <DialogTitle sx={{ pr: 6 }}>
+                {announcement.title}
+                <IconButton
+                  aria-label="关闭"
+                  onClick={() => setSelectedAnnouncement(null)}
+                  sx={{
+                    position: 'absolute',
+                    right: 8,
+                    top: 8,
+                  }}
+                >
+                  <CloseIcon />
+                </IconButton>
+              </DialogTitle>
+              <DialogContent dividers>
+                <Typography color="text.secondary" gutterBottom>
+                  {new Date(announcement.date).toLocaleDateString('zh-CN')}
+                </Typography>
+                <Box sx={{ mt: 2 }}>
+                  <ReactMarkdown>{announcement.content}</ReactMarkdown>
+                </Box>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={() => setSelectedAnnouncement(null)}>关闭</Button>
+              </DialogActions>
+            </Box>
+          ))
+        }
+      </Dialog>
     </Box>
   );
 }
