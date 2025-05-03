@@ -1,0 +1,27 @@
+{
+  "ideas": [
+    {
+      "id": "1746237835949",
+      "content": "这是一个测试想法",
+      "playerName": "awa",
+      "createdAt": "2025-05-03T02:03:55.949Z"
+    }
+  ],
+  "bugs": [
+    {
+      "id": "GC-1",
+      "content": "eee",
+      "playerName": "gjyyds1",
+      "createdAt": "2025-05-03T02:04:13.278Z",
+      "status": "open"
+    },
+    {
+      "id": "GC-2",
+      "content": "awa",
+      "playerName": "gjyyds1",
+      "createdAt": "2025-05-03T02:04:40.830Z",
+      "status": "cannot"
+    }
+  ],
+  "bugCounter": 2
+}
